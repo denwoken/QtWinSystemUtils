@@ -2,7 +2,7 @@
 #define SYSFILETYPE_H
 
 #include <QSettings>
-
+//#pragma comment(lib, "Shell32.lib") или LIBS += -lShell32 в qmake
 /*!
  * \brief The SysFileType class позволяет зарегистрировать тип файла в системе, добавить расширение и ассоциировать его к типу файла.
  * При необходимости позволит удалить тип файла и расширение.
