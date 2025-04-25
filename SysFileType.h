@@ -2,7 +2,18 @@
 #define SYSFILETYPE_H
 
 #include <QSettings>
-//#pragma comment(lib, "Shell32.lib") или LIBS += -lShell32 в qmake
+
+/*!
+ * \brief setDarkTitleBar делает у виджета темный titleBar
+ */
+void setDarkTitleBar(QWidget* w, bool darkMode_ = true);
+/*!
+ * \brief isWindowsDarkModeEnabled проверяет включена ли темная тема в винде
+ */
+bool isWindowsDarkModeEnabled();
+
+bool isApplicationRunningAsAdmin();
+
 /*!
  * \brief The SysFileType class позволяет зарегистрировать тип файла в системе, добавить расширение и ассоциировать его к типу файла.
  * При необходимости позволит удалить тип файла и расширение.

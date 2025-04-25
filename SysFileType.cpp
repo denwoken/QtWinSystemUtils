@@ -1,7 +1,44 @@
 #include "SysFileType.h"
 #include <QDebug>
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <shlobj.h>
+
+
+#include <QWidget>
+#pragma comment(lib, "Dwmapi.lib")
+#include <dwmapi.h>
+
+#ifndef DWMWA_USE_IMMERSIVE_DARK_MODE
+    #define DWMWA_USE_IMMERSIVE_DARK_MODE 20  // или 19 в старых версиях
+#endif
+
+void setDarkTitleBar(QWidget *w, bool darkMode_)
+{
+    HWND hwnd = (HWND)w->winId();
+    BOOL darkMode = (darkMode_)?TRUE:FALSE;
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &darkMode, sizeof(darkMode));
+}
+bool isWindowsDarkModeEnabled()
+{
+    QSettings settings(R"(HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize)", QSettings::NativeFormat);
+    return settings.value("AppsUseLightTheme", 1).toInt() == 0;
+}
+bool isApplicationRunningAsAdmin() {
+    BOOL isAdmin = FALSE;
+    HANDLE token = nullptr;
+
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &token)) {
+        TOKEN_ELEVATION elevation;
+        DWORD size;
+        if (GetTokenInformation(token, TokenElevation, &elevation, sizeof(elevation), &size)) {
+            isAdmin = elevation.TokenIsElevated;
+        }
+        CloseHandle(token);
+    }
+    return isAdmin;
+}
+
 
 
 SysFileType::SysFileType(const QString &fileTypeName)
@@ -147,7 +184,7 @@ void SysFileType::remove()
 void SysFileType::sysCacheUpdate()
 {
     // Обновляем ассоциации файлов в системе  (обновление иконок и т.п.)
-    SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
+   // SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
 }
 
 int SysFileType::countParametersInGroup(QSettings &group)

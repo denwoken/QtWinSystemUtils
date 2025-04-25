@@ -12,6 +12,7 @@ SOURCES += \
         main.cpp
 
 LIBS += -lShell32
+LIBS += -ldwmapi
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
